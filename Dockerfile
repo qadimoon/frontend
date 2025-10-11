@@ -23,7 +23,7 @@ FROM nginx:stable
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Copy the built Angular application to the NGINX web server directory
-COPY --from=build /app/dist/nasonas-frontend/browser /usr/share/nginx/html
+COPY --from=build /app/dist/qadimoon-frontend/browser /usr/share/nginx/html
 
 # Expose the application port
 EXPOSE 80
