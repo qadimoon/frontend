@@ -1,0 +1,85 @@
+<header>
+    <main>
+        @if (authService.aaid()) {
+            @switch (adminFetching.status()) {
+                @case ('loading') {
+                    <span>Loading..</span>
+                }
+                @case ('error') {
+                    <span>{{ adminFetching.error() }}</span>
+                }
+                @case ('resolved') {
+                    <div id="admin">
+                        <img id="profile-image" src="admin.svg" (click)="popover.toggle($event);">
+                        <p-popover #popover [focusOnShow]="false" [autofocus]="false">
+                            <p-button label="الملف الشخصي" icon="pi pi-user" iconPos="right" [text]="true" [rounded]="true" [fluid]="true" (onClick)="popover.hide(); state.isProfileVisible = true" [style]="{ display: 'flex', width: '100%', marginBottom: '0.25rem', color: 'var(--primary-light-color)' }" />
+                            <p-button label="تسجيل الخروج" icon="pi pi-sign-out" iconPos="right" [text]="true" [rounded]="true" severity="danger" [fluid]="true" (onClick)="popover.hide(); state.isLogoutDialogVisile = true" />
+                        </p-popover>
+                    </div>
+                }
+            }
+        } @else {
+            <a id="login" [routerLink]="paths.LOGIN(false)">تسجيل الدخول</a>
+        }
+        <div #navbar id="nav-bar">
+            @for (navItem of state.navItems; track $index) {
+                <a class="nav-item" [routerLink]="navItem.path" routerLinkActive="active-nav-item" [routerLinkActiveOptions]="{ exact: true }">{{ navItem.title }}</a>
+            }
+        </div>
+        <img id="logo" src="logo.jpg" alt="Logo" [routerLink]="paths.HOME(false)">
+        <i id="menu" class="pi pi-bars" (click)="this.state.isSidebarVisible = true"></i>
+    </main>
+</header>
+
+@if (adminFetching.status() === 'resolved') {
+    @let admin = adminFetching.value()?.data;
+    <p-dialog [(visible)]="state.isProfileVisible" [modal]="true" [draggable]="false" [autofocus]="false" [focusOnShow]="false">
+        <ng-template #content>
+            <div id="profile">
+                <img src="admin.svg" alt="">
+                <p>الاسم: <span>{{ admin?.name }}</span></p>
+                <p>اسم المستخدم: <span>{{ admin?.username }}</span></p>
+                <p>تاريخ الإنشاء: <span>{{ admin?.createdAt | date:'dd/MM/yyyy hh:mm a':'+0300' }}</span></p>
+            </div>
+        </ng-template>
+    </p-dialog>
+}
+
+<p-confirmDialog [visible]="state.isLogoutDialogVisile" message="هل أنت متأكد من أنّك تريد تسجيل الخروج؟" [closable]="false" [draggable]="false" (onHide)="state.isLogoutDialogVisile = false" [closeOnEscape]="false" [breakpoints]="{ '1199px': '75dvw', '575px': '90dvw' }" [style]="{ minWidth: '14rem', maxWidth: '24rem' }">
+    <ng-template #message>
+        <div [style]="{ display: 'flex', flexDirection: 'column', gap: '1rem' }">
+            <span>هل أنت متأكد من أنّك تريد تسجيل الخروج؟</span>
+            @if (loggingOut.error()) {
+                <p-message severity="error" closable="true" [life]="5000">{{ parseErrorMessage(loggingOut.error()) }}</p-message>
+            }
+        </div>
+    </ng-template>
+    <ng-template #footer>
+        <p-button label="نعم" [text]="true" severity="danger" (onClick)="logout()" [loading]="loggingOut.isLoading()"></p-button>
+        <p-button label="لا" [text]="true" (onClick)="state.isLogoutDialogVisile = false"></p-button>
+    </ng-template>
+</p-confirmDialog>
+
+<!-- <p-drawer [(visible)]="state.isSidebarVisible" position="full" [dismissible]="false" [closeOnEscape]="false" [closable]="true">
+    <ng-template #header>
+        <img src="logo.svg" alt="Logo" [style]="{ height: '3rem', width: '3rem' }">
+    </ng-template>
+    <ng-template #closeicon>
+        <i class="pi pi-times" [style]="{ padding: '0.5rem', color: 'var(--primary-light-color)' }"></i>
+    </ng-template>
+    <ng-template #content>
+        <div [style]="{ height: 'fit-content', display: 'grid', gridAutoFlow: 'row', gap: '0.5rem', textAlign: 'center' }">
+            @for (navItem of navItems; track $index) {
+                <a [routerLink]="navItem.route" (click)="state.isSidebarVisible = false" 
+                [style]="{ 
+                    padding: '0.5rem 1rem', 
+                    fontSize: '1rem', 
+                    color: 'var(--primary-light-color)', 
+                    backgroundColor: 'var(--secondary-container-color)', 
+                    borderRadius: '0.75rem', 
+                    textDecoration: 'none' 
+                }">{{ navItem.title }}</a>
+            }
+        </div>
+    </ng-template>
+</p-drawer> -->

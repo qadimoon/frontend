@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import "primeicons/primeicons.css";
+
+
+html {
+  --primary-light-color: #2878AD;
+  --secondary-light-color: #FFFFFF;
+  --tertiary-light-color: #F6F6F6;
+  --primary-container-color: #B49167;
+  --secondary-container-color: #F4F8FF;
+  --success-color: #56c770;
+  --error-color: #D32222;
+  --rating-color: #FDF530;
+
+  --max-content-width: 1200px;
+
+  .content-grid {
+    display: grid;
+    grid-template-columns: [full-width-start] minmax(1rem, 1fr) [content-start] min(calc(100% - 2rem), var(--max-content-width)) [content-end] minmax(1rem, 1fr) [full-width-end];
+    row-gap: 1rem;
+    padding-block: 1rem;
+
+    > :not(.full-width) {
+      grid-column: content;
+    }
+
+    .full-width {
+      grid-column: full-width;
+    }
+  }
+}
+
+body {
+  margin: 0;
+  background-color: var(--tertiary-light-color);
+}
+
+* {
+  box-sizing: border-box;
+  font-family: "Zain", sans-serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+}

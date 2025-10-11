@@ -1,0 +1,67 @@
+<main class="content-grid">
+    <header>
+        <p-button label="إضافة عضو" icon="pi pi-user-plus" (onClick)="showMemberCreationDialog()"></p-button>
+        <p-fluid>
+            <p-iconfield>
+                <input type="text" pInputText placeholder="ابحث عن عضو.." [fluid]="true" [formControl]="control" (input)="onSearch()" />
+                <p-inputicon [class]="fetching.status() === 'loading' ? 'pi pi-spinner pi-spin' : 'pi pi-search'"  />
+            </p-iconfield>
+        </p-fluid>
+
+        <p-select [options]="districtsFetching.value()?.data?.items" optionLabel="name" optionValue="id" placeholder="القضاء" [fluid]="true" (onChange)="this.districtId.set($event.value)" />
+        <p-select [options]="subdistrictsFetching.value()?.data?.items" optionLabel="name" optionValue="id" placeholder="الناحية" [fluid]="true" [disabled]="!districtId()" (onChange)="this.subdistrictId.set($event.value)" />
+    </header>
+    @switch (fetching.status()) {
+        @case ('loading') {
+            <span>Loading..</span>
+        }
+        @case ('error') {
+            <app-error [message]="parseErrorMessage(fetching.error())"></app-error>
+        }
+        @case ('resolved') {
+            <span>عدد الأعضاء الكلي: {{ fetching.value()?.data?.total }} </span>
+            <p-table [value]="fetching.value()?.data?.items ?? []" [stripedRows]="true" [lazy]="true" (onLazyLoad)="loadDataLazy($event)" [customSort]="true" [sortField]="sorter().sort" [sortOrder]="sorter().order" [paginator]="true" [rows]="fetching.value()?.data?.limit" [totalRecords]="fetching.value()?.data?.total ?? 0" [rowsPerPageOptions]="[10, 20, 30, 40, 50]" [first]="first()">
+                <ng-template #header>
+                    <tr>
+                        <th>الاسم</th>
+                        <th>المشرف</th>
+                        <th>رقم الهاتف</th>
+                        <th>القضاء</th>
+                        <th>الناحية</th>
+                        <th pSortableColumn="voters">عدد الناخبين <p-sortIcon field="voters"></p-sortIcon></th>
+                        <th pSortableColumn="date">تاريخ الإنشاء <p-sortIcon field="date"></p-sortIcon></th>
+                        <th>الأدوات</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-member>
+                    <tr>
+                        <td>{{ member.name }}</td>
+                        <td>{{ member.supervisor.name }}</td>
+                        <td>{{ member.phoneNumber }}</td>
+                        <td>{{ member.subdistrict.district.name }}</td>
+                        <td>{{ member.subdistrict.name }}</td>
+                        <td>{{ member.votersCount }}</td>
+                        <td>{{ member.createdAt | date:'dd/MM/yyyy hh:mm a':'+0300' }}</td>
+                        <td><p-button icon="pi pi-trash" severity="danger" (onClick)="isMemberDeletionDialogVisile = true"></p-button></td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        }
+    }
+</main>
+
+<p-confirmDialog [visible]="isMemberDeletionDialogVisile" acceptLabel="نعم" rejectLabel="لا" [draggable]="false" [closable]="false" (onHide)="isMemberDeletionDialogVisile = false" [closeOnEscape]="false" [style]="{ maxWidth: '24rem' }">
+    <ng-template #message>
+        <div id="message">
+            <span [style]="{ display: 'block', marginBottom: '0.25rem' }">هل أنت متأكد من أنّك تريد حذف هذا العضو؟</span>
+            @if (deleting.status() === 'error') {
+                <p-message severity="error" closable="true" [life]="5000">{{ parseErrorMessage(deleting.error()) }}</p-message>
+            }
+        </div>
+    </ng-template>
+    
+    <ng-template #footer>
+        <p-button label="نعم" [text]="true" severity="danger" (onClick)="delete()" [loading]="deleting.status() === 'loading'" [disabled]="deleting.status() === 'loading'"></p-button>
+        <p-button label="لا" [text]="true" (onClick)="deleting.destroy(); isMemberDeletionDialogVisile = false" [disabled]="deleting.status() === 'loading'"></p-button>
+    </ng-template>
+</p-confirmDialog>

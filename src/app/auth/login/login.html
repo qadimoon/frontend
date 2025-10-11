@@ -1,0 +1,26 @@
+<main>
+    <img id="logo" src="admin.svg" alt="Logo" [routerLink]="paths.HOME(false)">
+    <span id="header">تسجيل الدخول</span>
+    <form [formGroup]="loginForm">
+        <div class="input-container">
+            @let usernameControl = loginForm.controls.username;
+            <p-floatLabel variant="on">
+                <input pInputText id="username" [fluid]="true" formControlName="username" type="text" maxlength="32" (blur)="usernameControl.validate()" (input)="usernameControl.validate()" />
+                <label for="username">{{ usernameControl.label }}</label>
+            </p-floatLabel>
+            <small class="error">{{ usernameControl.errorMessage() }}</small>
+        </div>
+        <div class="input-container">
+            @let passwordControl = loginForm.controls.password;
+            <p-floatLabel variant="on">
+                <p-password id="password" [fluid]="true" type="password" formControlName="password" maxLength="128" [feedback]="false" [toggleMask]="true" [style]="{'width':'100%'}" [inputStyle]="{'width':'100%'}" (onBlur)="passwordControl.validate()" (ngModelChange)="passwordControl.validate()" />
+                <label for="password">{{ passwordControl.label }}</label>
+            </p-floatLabel>
+            <small class="error">{{ passwordControl.errorMessage() }}</small>
+        </div>
+        @if (loggingIn.error()) {
+            <span class="error">{{ parseErrorMessage(loggingIn.error()) }}</span>
+        }
+        <p-button label="تسجيل الدخول" [fluid]="true" [disabled]="!loginForm.valid" (onClick)="login()" [loading]="loggingIn.isLoading()" />
+    </form>
+</main>

@@ -1,0 +1,40 @@
+<form [formGroup]="form">
+    <div class="input-container">
+        @let nameControl = form.controls.name;
+        <p-floatLabel variant="on">
+            <input pInputText id="name" formControlName="name" type="text" maxlength="32" [fluid]="true" (blur)="nameControl.validate()" (input)="nameControl.validate()"/>
+            <label for="name">الاسم</label>
+        </p-floatLabel>
+        <small class="error">{{ nameControl.errorMessage() }}</small>
+    </div>
+    <div class="input-container">
+        @let phoneNumberControl = form.controls.phoneNumber;
+        <p-floatLabel variant="on">
+            <p-inputmask mask="07999999999" id="phoneNumber" formControlName="phoneNumber" [fluid]="true" [invalid]="!isPhoneNumberCompleted && form.controls.phoneNumber.touched" (onBlur)="phoneNumberControl.validate()" (onComplete)="isPhoneNumberCompleted = true" (onInput)="isPhoneNumberCompleted = false" />
+            <label for="phoneNumber">رقم الهاتف</label>
+        </p-floatLabel>
+        <small class="error">{{ phoneNumberControl.errorMessage() }}</small>
+    </div>
+    <div class="input-container">
+        @let districtControl = form.controls.district;
+        <p-floatLabel variant="on">
+            <p-select id="district" formControlName="district" [options]="districtsPagination.items()" optionLabel="name" optionValue="id" appendTo="body" [fluid]="true" [filter]="true" (onHide)="districtControl.validate()" (onChange)="fetchSubdistricts()"></p-select>
+            <label for="district">القضاء</label>
+        </p-floatLabel>
+        <small class="error">{{ districtControl.errorMessage() }}</small>
+    </div>
+    @if (subdistrictsRequest()) {
+        <div class="input-container">
+            @let subdistrictControl = form.controls.subdistrict;
+            <p-floatLabel variant="on">
+                <p-select id="subdistrict" formControlName="subdistrict" [options]="subdistrictsPagination.items()" optionLabel="name" optionValue="id" appendTo="body" [fluid]="true" [filter]="true" (onHide)="subdistrictControl.validate()"></p-select>
+                <label for="subdistrict">الناحية</label>
+            </p-floatLabel>
+            <small class="error">{{ subdistrictControl.errorMessage() }}</small>
+        </div>
+    }
+    @if (creation.status() === 'error') {
+        <small class="error">{{ parseErrorMessage(creation.error()) }}</small>
+    }
+    <p-button label="إضافة" styleClass="p-button" [fluid]="true" [disabled]="!form.valid || !isPhoneNumberCompleted || creation.status() === 'loading'" (onClick)="create()" [loading]="creation.status() === 'loading'" />
+</form>

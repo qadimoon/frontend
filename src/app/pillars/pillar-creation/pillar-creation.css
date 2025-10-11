@@ -1,0 +1,26 @@
+:host {
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.75rem;
+        padding-top: 0.5rem;
+        min-width: 20rem;
+
+        #radio-buttons {
+            display: grid;
+            grid-auto-flow: column;
+            row-gap: 1rem;
+
+            .radio-button {
+                display: flex;
+                flex-direction: row;
+                gap: 0.25rem;
+            }
+        }
+    }
+
+    .error {
+        color: var(--error-color);
+    }
+}

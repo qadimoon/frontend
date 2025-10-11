@@ -1,0 +1,11 @@
+:host {
+    header {
+        display: grid;
+        grid-template-columns: auto 3fr 1fr 1fr;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        background-color: var(--secondary-light-color);
+    }
+}

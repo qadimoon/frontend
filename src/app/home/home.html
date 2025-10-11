@@ -1,0 +1,58 @@
+<main>
+    <!-- <ul>
+        <li [routerLink]="paths.SUPERVISORS(false)">
+            <span>المشرفون</span>
+            <img src="supervisor.svg" alt="مشرف">
+        </li>
+        <li [routerLink]="paths.MEMBERS(false)">
+            <span>الأعضاء</span>
+            <img src="member.svg" alt="عضو">
+        </li>
+        <li [routerLink]="paths.PILLARS(false)">
+            <span>الركائز</span>
+            <img src="pillar.svg" alt="ركيزة">
+        </li>
+    </ul> -->
+
+    @switch (fetching.status()) {
+        @case ('loading') {
+            <span>Loading..</span>
+        }
+        @case ('error') {
+            <app-error [message]="parseErrorMessage(fetching.error())"></app-error>
+        }
+        @case ('resolved') { 
+            <div id="total">
+                <span id="count">{{ fetching.value().data.voters | number }}</span>
+                <span>عدد الناخبين الكلي</span>
+            </div>
+        
+            <ul>
+                <li [routerLink]="paths.SUPERVISORS(false)">
+                    <span class="title">المشرفون</span>
+                    <div class="counter">
+                        <span class="count">{{ fetching.value().data.supervisors | number }}</span>
+                        <span>العدد الكلي<br> </span>
+                    </div>
+                    <img src="supervisor.svg" alt="مشرف">
+                </li>
+                <li [routerLink]="paths.MEMBERS(false)">
+                    <span class="title">الأعضاء</span>
+                    <div class="counter">
+                        <span class="count">{{ fetching.value().data.members | number }}</span>
+                        <span>العدد الكلي<br> </span>
+                    </div>
+                    <img src="member.svg" alt="عضو">
+                </li>
+                <li [routerLink]="paths.PILLARS(false)">
+                    <span class="title">الركائز</span>
+                    <div class="counter">
+                        <span class="count">{{ fetching.value().data.pillars | number }}</span>
+                        <span>العدد الكلي<br> </span>
+                    </div>
+                    <img src="pillar.svg" alt="ركيزة">
+                </li>
+            </ul>
+        }
+    }
+</main>
