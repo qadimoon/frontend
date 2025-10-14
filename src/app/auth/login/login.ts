@@ -12,6 +12,7 @@ import { parseErrorMessage } from '../../common/utils/utils';
 import { SimpleResponse } from '../../common/interfaces/simple-response';
 import { Admin } from '../admin';
 import { AuthService } from '../auth.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -67,7 +68,7 @@ export class Login {
 
   login() {
     this.url.set({
-      url: 'http://localhost:3000/auth/login',
+      url: `${environment.apiUrl}/auth/login`,
       method: 'POST',
       withCredentials: true,
       body: {
